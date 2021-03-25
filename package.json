@@ -1,7 +1,7 @@
 {
-  "name": "groupchat",
+  "name": "group-chat",
   "version": "1.0.0",
-  "description": "This is a group chat app",
+  "description": "Real-time chat app",
   "main": "server.js",
   "scripts": {
     "test": "npm test",
@@ -10,18 +10,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apnziza/GroupChat.git"
+    "url": "git+https://github.com/trekab/group-chat.git"
   },
-  "author": "Paullate Nyiranziza",
+  "author": "Treasure Kabareebe",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/apnziza/GroupChat/issues"
+    "url": "https://github.com/trekab/group-chat/issues"
   },
-  "homepage": "https://github.com/apnziza/GroupChat#readme",
+  "homepage": "https://github.com/trekab/group-chat#readme",
   "dependencies": {
     "express": "^4.17.1",
     "moment": "^2.29.1",
-    "nodemon": "^2.0.7",
     "socket.io": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

@@ -1,1 +1,1 @@
-# GroupChat
+# group-chat

@@ -9,21 +9,21 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="text-center">Welcome to Groupchat</h1>
-    <p class="text-center">
-      Log in or Sign up to join the chat.
+    <h1 class="mt-4 text-center">Welcome to GroupChat</h1>
+    <p class="my-4 text-center">
+      Log in or Sign Up to join the GroupChat
     </p>
     <div class="row d-flex align-items-center border border-2 border-secondary p-4 rounded-3">
-      <div class="col-md-7 border border-2 border-secondary p-4 rounded-3">
+      <div class="col-md-8 border border-2 border-secondary p-4 rounded-3">
         <form action="user_dashboard.html">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
           </div>
           <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <input type="password" class="form-control" id="exampleInputPassword1" required>
           </div>
           <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -33,11 +33,11 @@
         </form>
       </div>
       <div class="col-md-2 text-center">
-        <span>OR</span>
+        <span class="align-middle">OR</span>
       </div>
-      <div class="col-md-3 text-center">
+      <div class="col-md-2 text-center">
         <a href="signup.html" class="btn btn-primary">Sign Up</a>
-      </div>
+      </div>  
     </div>
   </div>
 </body>
