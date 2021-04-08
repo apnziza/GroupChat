@@ -25,6 +25,16 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+// Create DB
+app.get('/createdb', (req, res) => {
+  let sql = 'CREATE DATABASE group_chat';
+  db.query(sql, (err, result) => {
+    if(err) throw err;
+    console.log(result);
+    res.send('database created...');
+  });
+});
+
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
