@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 const mysql = require('mysql');
+const bodyParser = require('body-parser');
 const formatMessage = require('./utils/messages');
 
 // Create DB connection
@@ -22,6 +23,10 @@ db.connect((err) => {
 });
 
 const app = express();
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 const server = http.createServer(app);
 const io = socketio(server);
 
@@ -37,12 +42,28 @@ app.get('/createdb', (req, res) => {
 
 // Create table
 app.get('/createuserstable', (req, res) => {
-  let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, first_name VARCHAR(255), last_name VARCHAR(255), email VARCHAR(255), admin BOOLEAN NOT NULL DEFAULT 0, avatar_url VARCHAR(255), PRIMARY KEY(id))';
+  let sql = 'CREATE TABLE users(id int AUTO_INCREMENT, first_name VARCHAR(255), last_name VARCHAR(255), email VARCHAR(255), password VARCHAR(255), admin BOOLEAN NOT NULL DEFAULT 0, avatar_url VARCHAR(255), PRIMARY KEY(id))';
 
   db.query(sql, (err, result) => {
     if(err) throw err;
     console.log(result);
     res.send('Users table created...')
+  });
+});
+
+// Create users
+app.post('/sign_up', (req, res) => {
+  let firstName = req.body.firstName;
+  let lastName = req.body.lastName;
+  let email = req.body.email;
+  let password = req.body.password;
+  let confirmPassword = req.body.confirmPassword;
+  let user = {first_name: firstName, last_name: lastName, email: email, password: password};
+  let sql = 'INSERT INTO users SET ?';
+  let query = db.query(sql, user, (err, result) => {
+    if(err) throw err;
+    console.log(result);
+    res.send(`${firstName} added to the database...`);
   });
 });
 
