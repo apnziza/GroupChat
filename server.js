@@ -35,6 +35,18 @@ app.get('/createdb', (req, res) => {
   });
 });
 
+// Create table
+app.get('/createuserstable', (req, res) => {
+  let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT, first_name VARCHAR(255), last_name VARCHAR(255), email VARCHAR(255), admin BOOLEAN NOT NULL DEFAULT 0, avatar_url VARCHAR(255), PRIMARY KEY(id))';
+
+  db.query(sql, (err, result) => {
+    if(err) throw err;
+    console.log(result);
+    res.send('Users table created...')
+  });
+});
+
+
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
