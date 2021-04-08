@@ -2,7 +2,24 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
+const mysql = require('mysql');
 const formatMessage = require('./utils/messages');
+
+// Create DB connection
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'group_chat'
+});
+
+// Connect
+db.connect((err) => {
+  if(err){
+    throw err;
+  }
+  console.log('MySql Connected...');
+});
 
 const app = express();
 const server = http.createServer(app);
