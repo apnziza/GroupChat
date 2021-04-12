@@ -67,6 +67,11 @@ app.post('/sign_up', (req, res) => {
   });
 });
 
+// User log in
+app.post('/login', (req, res) => {
+  
+});
+
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
