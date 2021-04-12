@@ -5,6 +5,7 @@ const socketio = require('socket.io');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const formatMessage = require('./utils/messages');
+const session = require('express-session');
 
 // Create DB connection
 const db = mysql.createConnection({
@@ -67,9 +68,33 @@ app.post('/sign_up', (req, res) => {
   });
 });
 
+// Create sessions
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+
 // User log in
 app.post('/login', (req, res) => {
-  
+  let email = req.body.email;
+  let password = req.body.password;
+  let sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
+  if (email && password){
+    db.query(sql, [email, password], (err, result) => {
+      if (result.length > 0){
+        req.session.loggedin = true;
+        req.session.email = email;
+        res.redirect('/user_dashboard.html');
+      } else {
+        res.send('Incorrect Username and/or Password!');
+      }
+      res.end();
+    });
+  } else {
+    res.send('Please enter Username and Password!');
+    res.end();
+  }
 });
 
 
