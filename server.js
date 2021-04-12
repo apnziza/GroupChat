@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const formatMessage = require('./utils/messages');
-const { response } = require('express');
+const session = require('express-session');
 
 // Create DB connection
 const db = mysql.createConnection({
@@ -68,6 +68,13 @@ app.post('/sign_up', (req, res) => {
   });
 });
 
+// Create sessions
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+
 // User log in
 app.post('/login', (req, res) => {
   let email = req.body.email;
@@ -78,7 +85,7 @@ app.post('/login', (req, res) => {
       if (result.length > 0){
         req.session.loggedin = true;
         req.session.email = email;
-        res.redirect('/user_dashboard');
+        res.redirect('/user_dashboard.html');
       } else {
         res.send('Incorrect Username and/or Password!');
       }
