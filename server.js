@@ -29,28 +29,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 const server = http.createServer(app);
-const io = socketio(server);
-
-// Create DB
-app.get('/createdb', (req, res) => {
-  let sql = 'CREATE DATABASE group_chat';
-  db.query(sql, (err, result) => {
-    if(err) throw err;
-    console.log(result);
-    res.send('database created...');
-  });
-});
-
-// Create table
-app.get('/createuserstable', (req, res) => {
-  let sql = 'CREATE TABLE users(id int AUTO_INCREMENT, first_name VARCHAR(255), last_name VARCHAR(255), email VARCHAR(255), password VARCHAR(255), admin BOOLEAN NOT NULL DEFAULT 0, avatar_url VARCHAR(255), PRIMARY KEY(id))';
-
-  db.query(sql, (err, result) => {
-    if(err) throw err;
-    console.log(result);
-    res.send('Users table created...')
-  });
-});
+const io = socketio(server)
 
 // Create users
 app.post('/sign_up', (req, res) => {
