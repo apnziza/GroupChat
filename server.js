@@ -96,6 +96,7 @@ const botName = 'Admin';
 io.on('connection', socket => {
   // Welcome current user
   socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
+  let sessionID = currentUserID;
 
   // Broadcast when a user connects
   socket.broadcast.emit('message', formatMessage(botName,'A user has joined the chat'));
@@ -111,7 +112,7 @@ io.on('connection', socket => {
 
     // Send message to database
 
-    let messageContent = {message: msg, user_id: currentUserID};
+    let messageContent = {message: msg, user_id: sessionID};
     let sql = "INSERT INTO messages SET ?";
     db.query(sql, messageContent, (err, result) => {
       if(err) throw err;
