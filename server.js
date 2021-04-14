@@ -55,6 +55,13 @@ app.get("/get_users", (req, res) => {
   });
 });
 
+// create endpoint for getting meesage from the db
+app.get("/get_chats", (req, res) => {
+  db.query("SELECT * FROM messages", (error, messages) => {
+    res.end(JSON.stringify(messages));
+  });
+});
+
 // Create sessions
 app.use(session({
 	secret: 'secret',
