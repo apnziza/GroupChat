@@ -47,6 +47,13 @@ app.post('/sign_up', (req, res) => {
   });
 });
 
+// create endpoint for get_users
+app.get("/get_users", (req, res) => {
+  db.query("SELECT * FROM users", (error, users) => {
+    res.end(JSON.stringify(users));
+  });
+});
+
 // Create sessions
 app.use(session({
 	secret: 'secret',
