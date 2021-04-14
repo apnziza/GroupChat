@@ -24,6 +24,7 @@ db.connect((err) => {
 });
 
 const app = express();
+let currentUserID;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -71,6 +72,8 @@ app.post('/login', (req, res) => {
       if (result.length > 0){
         req.session.loggedin = true;
         req.session.email = email;
+        let user = JSON.parse(JSON.stringify(result[0]));
+        currentUserID = user.id;
         res.redirect('/user_dashboard.html');
       } else {
         res.send('Incorrect Username and/or Password!');
@@ -105,6 +108,15 @@ io.on('connection', socket => {
   // Listen for chatMessage
   socket.on('chatMessage', (msg) => {
     io.emit('message', formatMessage('USER', msg));
+
+    // Send message to database
+
+    let messageContent = {message: msg, user_id: currentUserID};
+    let sql = "INSERT INTO messages SET ?";
+    db.query(sql, messageContent, (err, result) => {
+      if(err) throw err;
+      console.log(result);
+    });
   });
 });
 
