@@ -24,33 +24,13 @@ db.connect((err) => {
 });
 
 const app = express();
+let currentUserID;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 const server = http.createServer(app);
-const io = socketio(server);
-
-// Create DB
-app.get('/createdb', (req, res) => {
-  let sql = 'CREATE DATABASE group_chat';
-  db.query(sql, (err, result) => {
-    if(err) throw err;
-    console.log(result);
-    res.send('database created...');
-  });
-});
-
-// Create table
-app.get('/createuserstable', (req, res) => {
-  let sql = 'CREATE TABLE users(id int AUTO_INCREMENT, first_name VARCHAR(255), last_name VARCHAR(255), email VARCHAR(255), password VARCHAR(255), admin BOOLEAN NOT NULL DEFAULT 0, avatar_url VARCHAR(255), PRIMARY KEY(id))';
-
-  db.query(sql, (err, result) => {
-    if(err) throw err;
-    console.log(result);
-    res.send('Users table created...')
-  });
-});
+const io = socketio(server)
 
 // Create users
 app.post('/sign_up', (req, res) => {
@@ -65,6 +45,20 @@ app.post('/sign_up', (req, res) => {
     if(err) throw err;
     console.log(result);
     res.send(`${firstName} added to the database...`);
+  });
+});
+
+// create endpoint for get_users
+app.get("/get_users", (req, res) => {
+  db.query("SELECT * FROM users", (error, users) => {
+    res.end(JSON.stringify(users));
+  });
+});
+
+// create endpoint for getting meesage from the db
+app.get("/get_chats", (req, res) => {
+  db.query("SELECT * FROM messages", (error, messages) => {
+    res.end(JSON.stringify(messages));
   });
 });
 
@@ -85,6 +79,8 @@ app.post('/login', (req, res) => {
       if (result.length > 0){
         req.session.loggedin = true;
         req.session.email = email;
+        let user = JSON.parse(JSON.stringify(result[0]));
+        currentUserID = user.id;
         res.redirect('/user_dashboard.html');
       } else {
         res.send('Incorrect Username and/or Password!');
@@ -107,6 +103,7 @@ const botName = 'Admin';
 io.on('connection', socket => {
   // Welcome current user
   socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
+  let sessionID = currentUserID;
 
   // Broadcast when a user connects
   socket.broadcast.emit('message', formatMessage(botName,'A user has joined the chat'));
@@ -119,6 +116,15 @@ io.on('connection', socket => {
   // Listen for chatMessage
   socket.on('chatMessage', (msg) => {
     io.emit('message', formatMessage('USER', msg));
+
+    // Send message to database
+
+    let messageContent = {message: msg, user_id: sessionID};
+    let sql = "INSERT INTO messages SET ?";
+    db.query(sql, messageContent, (err, result) => {
+      if(err) throw err;
+      console.log(result);
+    });
   });
 });
 
