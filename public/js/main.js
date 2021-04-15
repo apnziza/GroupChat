@@ -1,6 +1,9 @@
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById("chat-messages-card");
 const userList = document.getElementById("users");
+const content = document.getElementById('content');
+
+
 
 const socket = io();
 
