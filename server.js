@@ -25,6 +25,7 @@ db.connect((err) => {
 
 const app = express();
 let currentUserID;
+let currentUserFirstName;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -81,6 +82,7 @@ app.post('/login', (req, res) => {
         req.session.email = email;
         let user = JSON.parse(JSON.stringify(result[0]));
         currentUserID = user.id;
+        currentUserFirstName = user.first_name;
         res.redirect('/user_dashboard.html');
       } else {
         res.send('Incorrect Username and/or Password!');
@@ -102,15 +104,17 @@ const botName = 'Admin';
 // Run when a client connects
 io.on('connection', socket => {
   // Welcome current user
-  socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
   let sessionID = currentUserID;
+  let sessionFirstName = currentUserFirstName;
+
+  socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
 
   // Broadcast when a user connects
-  socket.broadcast.emit('message', formatMessage(botName,'A user has joined the chat'));
+  socket.broadcast.emit('message', formatMessage(botName, `${sessionFirstName} has joined the chat.`));
 
   // Runs when a client disconnects
   socket.on('disconnect', () => {
-    io.emit('message', formatMessage(botName,'A user has left the chat'));
+    io.emit('message', formatMessage(botName,`${sessionFirstName} has left the chat.`));
   });
 
   // Listen for chatMessage
