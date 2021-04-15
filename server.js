@@ -100,7 +100,7 @@ app.post('/login', (req, res) => {
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-const botName = 'Admin';
+const botName = 'ChatBot';
 
 // Run when a client connects
 io.on('connection', socket => {
@@ -109,7 +109,7 @@ io.on('connection', socket => {
   let sessionFirstName = currentUserFirstName;
   let user = userJoin(sessionID, sessionFirstName);
 
-  socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
+  socket.emit('message', formatMessage(botName, `Hi ${user.username}, Welcome to GroupChat!`));
 
   // Broadcast when a user connects
   socket.broadcast.emit('message', formatMessage(botName, `${user.username} has joined the chat.`));
