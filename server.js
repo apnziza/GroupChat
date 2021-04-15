@@ -114,9 +114,19 @@ io.on('connection', socket => {
   // Broadcast when a user connects
   socket.broadcast.emit('message', formatMessage(botName, `${user.username} has joined the chat.`));
 
+  // Broadcast online users
+  io.emit('onlineUsers', {
+    users: getOnlineUsers()
+  });
+
   // Runs when a client disconnects
   socket.on('disconnect', () => {
+    const users = userLeave(user.id);
     io.emit('message', formatMessage(botName,`${user.username} has left the chat.`));
+    // Broadcast online users
+    io.emit('onlineUsers', {
+      users: getOnlineUsers()
+    });
   });
 
   // Listen for chatMessage
