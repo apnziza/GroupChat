@@ -5,7 +5,7 @@ const socketio = require('socket.io');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const formatMessage = require('./utils/messages');
-const userJoin = require('./utils/users');
+const { userJoin, userLeave, getOnlineUsers } = require('./utils/users');
 const session = require('express-session');
 
 // Create DB connection
