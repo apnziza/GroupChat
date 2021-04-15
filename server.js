@@ -5,6 +5,7 @@ const socketio = require('socket.io');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const formatMessage = require('./utils/messages');
+const userJoin = require('./utils/users');
 const session = require('express-session');
 
 // Create DB connection
@@ -106,24 +107,25 @@ io.on('connection', socket => {
   // Welcome current user
   let sessionID = currentUserID;
   let sessionFirstName = currentUserFirstName;
+  let user = userJoin(sessionID, sessionFirstName);
 
   socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
 
   // Broadcast when a user connects
-  socket.broadcast.emit('message', formatMessage(botName, `${sessionFirstName} has joined the chat.`));
+  socket.broadcast.emit('message', formatMessage(botName, `${user.username} has joined the chat.`));
 
   // Runs when a client disconnects
   socket.on('disconnect', () => {
-    io.emit('message', formatMessage(botName,`${sessionFirstName} has left the chat.`));
+    io.emit('message', formatMessage(botName,`${user.username} has left the chat.`));
   });
 
   // Listen for chatMessage
   socket.on('chatMessage', (msg) => {
-    io.emit('message', formatMessage('USER', msg));
+    io.emit('message', formatMessage(user.username, msg));
 
     // Send message to database
 
-    let messageContent = {message: msg, user_id: sessionID};
+    let messageContent = {message: msg, user_id: user.id};
     let sql = "INSERT INTO messages SET ?";
     db.query(sql, messageContent, (err, result) => {
       if(err) throw err;
