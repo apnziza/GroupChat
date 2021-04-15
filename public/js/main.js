@@ -38,7 +38,7 @@ chatForm.addEventListener('submit', (e) => {
 function outputMessage(message, author){
   const li = document.createElement('li');
   li.classList = "list-group-item";
-  li.innerHTML = `<div class="d-flex align-items-center justify-content-between"><span><i class="far fa-user-circle m-1"></i><span class="fw-bold">${author}:</span></span><span>${message.text}</span><span class="">${message.time}</span></div>`;
+  li.innerHTML = `<div class="d-flex align-items-center justify-content-between"><span class="d-flex align-items-center"><i class="far fa-user-circle m-1"></i><span class="fw-bold">${author}:</span></span><span>${message.text}</span><span class="fst-italic">${message.time}</span></div>`;
   document.getElementById("chat-messages").appendChild(li);
 }
 

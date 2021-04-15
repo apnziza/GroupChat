@@ -100,7 +100,7 @@ app.post('/login', (req, res) => {
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-const botName = 'Admin';
+const botName = 'ChatBot';
 
 // Run when a client connects
 io.on('connection', socket => {
