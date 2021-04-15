@@ -109,7 +109,7 @@ io.on('connection', socket => {
   let sessionFirstName = currentUserFirstName;
   let user = userJoin(sessionID, sessionFirstName);
 
-  socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
+  socket.emit('message', formatMessage(botName, `Hi ${user.username}, Welcome to GroupChat!`));
 
   // Broadcast when a user connects
   socket.broadcast.emit('message', formatMessage(botName, `${user.username} has joined the chat.`));
