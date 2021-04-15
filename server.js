@@ -5,6 +5,7 @@ const socketio = require('socket.io');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const formatMessage = require('./utils/messages');
+const { userJoin, userLeave, getOnlineUsers } = require('./utils/users');
 const session = require('express-session');
 
 // Create DB connection
@@ -25,6 +26,7 @@ db.connect((err) => {
 
 const app = express();
 let currentUserID;
+let currentUserFirstName;
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
@@ -81,6 +83,7 @@ app.post('/login', (req, res) => {
         req.session.email = email;
         let user = JSON.parse(JSON.stringify(result[0]));
         currentUserID = user.id;
+        currentUserFirstName = user.first_name;
         res.redirect('/user_dashboard.html');
       } else {
         res.send('Incorrect Username and/or Password!');
@@ -102,24 +105,37 @@ const botName = 'Admin';
 // Run when a client connects
 io.on('connection', socket => {
   // Welcome current user
-  socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
   let sessionID = currentUserID;
+  let sessionFirstName = currentUserFirstName;
+  let user = userJoin(sessionID, sessionFirstName);
+
+  socket.emit('message', formatMessage(botName, 'Welcome to GroupChat!'));
 
   // Broadcast when a user connects
-  socket.broadcast.emit('message', formatMessage(botName,'A user has joined the chat'));
+  socket.broadcast.emit('message', formatMessage(botName, `${user.username} has joined the chat.`));
+
+  // Broadcast online users
+  io.emit('onlineUsers', {
+    users: getOnlineUsers()
+  });
 
   // Runs when a client disconnects
   socket.on('disconnect', () => {
-    io.emit('message', formatMessage(botName,'A user has left the chat'));
+    const users = userLeave(user.id);
+    io.emit('message', formatMessage(botName,`${user.username} has left the chat.`));
+    // Broadcast online users
+    io.emit('onlineUsers', {
+      users: getOnlineUsers()
+    });
   });
 
   // Listen for chatMessage
   socket.on('chatMessage', (msg) => {
-    io.emit('message', formatMessage('USER', msg));
+    io.emit('message', formatMessage(user.username, msg));
 
     // Send message to database
 
-    let messageContent = {message: msg, user_id: sessionID};
+    let messageContent = {message: msg, user_id: user.id};
     let sql = "INSERT INTO messages SET ?";
     db.query(sql, messageContent, (err, result) => {
       if(err) throw err;

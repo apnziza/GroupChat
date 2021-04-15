@@ -1,7 +1,13 @@
 const chatForm = document.getElementById('chat-form');
 const chatMessages = document.getElementById("chat-messages-card");
+const userList = document.getElementById("users");
 
 const socket = io();
+
+// Get chat users
+socket.on('onlineUsers', ({users}) => {
+  outputUsers(users);
+});
 
 // Message from server
 socket.on('message', message => {
@@ -34,4 +40,10 @@ function outputMessage(message){
   li.classList = "list-group-item";
   li.innerHTML = `<div class="d-flex align-items-center justify-content-between"><i class="far fa-user-circle m-1"></i><span>${message.text}</span><span class="">${message.time}</span></div>`;
   document.getElementById("chat-messages").appendChild(li);
+}
+
+function outputUsers(users){
+  userList.innerHTML = `
+    ${users.map(user => `<li class="list-group-item d-flex align-items-center"><i class="far fa-user-circle m-1"></i><span>${user.username}</span></li>`).join()}
+  `;                                                                                   
 }
