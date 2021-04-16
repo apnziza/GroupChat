@@ -1,20 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-  <title>GroupChat</title>
-</head>
-<body>
-  <div class="container">
-    <h1 class="mt-4 text-center">Welcome to GroupChat</h1>
-    <p class="mt-4 text-center">
-      Log in or Sign Up to join the GroupChat
-    </p>
-    <div class="row d-flex align-items-center border border-2 border-secondary p-4 rounded-3">
-      <div class="col-md-8 border border-2 border-secondary p-4 rounded-3">
+const form = document.getElementById('myForm');
+const signup = document.getElementById('signup');
+
+signup.addEventListener('click', () => {
+  if(signup.textContent === "Sign Up"){
+    form.innerHTML = `
         <form action="/sign_up" method="POST">
           <div class="mb-3">
             <label for="firstName" class="form-label">First Name</label>
@@ -38,15 +27,29 @@
             <input type="password" name="confirmPassword" class="form-control" id="exampleInputPasswordConfirmation" required>
           </div>
           <button type="submit" class="btn btn-primary">Sign Up</button>
-        </form>
+        </form> 
+    `;
+    signup.textContent = "Log In";
+  } else {
+    form.innerHTML = `
+      <form action="/login" method="POST">
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Email address</label>
+        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
       </div>
-      <div class="col-md-2 text-center">
-        <span class="align-middle">OR</span>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
       </div>
-      <div class="col-md-2 text-center">
-        <a href="index.html" class="btn btn-primary">Log In</a>
-      </div>  
-    </div>
-  </div>
-</body>
-</html>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Log In</button>
+      </form>
+    `;
+
+    signup.textContent = "Sign Up";
+  }
+});
